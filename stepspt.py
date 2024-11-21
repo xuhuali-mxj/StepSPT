@@ -15,9 +15,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 import configs
-from models.ming import VisionTransformer, CFG
+#from models.ming import VisionTransformer, CFG
 
-from io_utils import model_dict, parse_args
+#from io_utils import model_dict, parse_args
+from io_utils import parse_args
 
 from datasets import ISIC_few_shot_da, EuroSAT_few_shot_da, CropDisease_few_shot_da, Chest_few_shot_da, Pattern_few_shot_da
 
@@ -339,14 +340,14 @@ def finetune(img_size, novel_loader, n_query=15, freeze_backbone=False, mt='ViT-
         topk_ind_ori = topk_labels.cpu().numpy()
         top1_correct_ori = np.sum(topk_ind_ori[:, 0] == y_query)
         correct_ori = float(top1_correct_ori)
-        print('BSR+DA: %f' % (correct_ori / count_this * 100))
+        print('SPT+DA: %f' % (correct_ori / count_this * 100))
         acc_all_ori.append((correct_ori / count_this * 100))
 
         
         topk_ind_lp = np.argmax(scores_lp, 1)
         top1_correct_lp = np.sum(topk_ind_lp == y_query)
         correct_lp = float(top1_correct_lp)
-        print('BSR+LP+DA: %f' % (correct_lp / count_this * 100))
+        print('SPT+LP+DA: %f' % (correct_lp / count_this * 100))
         acc_all_lp.append((correct_lp / count_this * 100))
         
         ###############################################################################################
@@ -354,13 +355,13 @@ def finetune(img_size, novel_loader, n_query=15, freeze_backbone=False, mt='ViT-
     acc_all_ori = np.asarray(acc_all_ori)
     acc_mean_ori = np.mean(acc_all_ori)
     acc_std_ori = np.std(acc_all_ori)
-    print('BSR+DA: %d Test Acc = %4.2f%% +- %4.2f%%' %
+    print('SPT+DA: %d Test Acc = %4.2f%% +- %4.2f%%' %
           (iter_num, acc_mean_ori, 1.96 * acc_std_ori / np.sqrt(iter_num)))
 
     acc_all_lp = np.asarray(acc_all_lp)
     acc_mean_lp = np.mean(acc_all_lp)
     acc_std_lp = np.std(acc_all_lp)
-    print('BSR+LP+DA: %d Test Acc = %4.2f%% +- %4.2f%%' %
+    print('SPT+LP+DA: %d Test Acc = %4.2f%% +- %4.2f%%' %
           (iter_num, acc_mean_lp, 1.96 * acc_std_lp / np.sqrt(iter_num)))
 
 
@@ -377,7 +378,7 @@ if __name__=='__main__':
     few_shot_params = dict(n_way=params.test_n_way, n_support=params.n_shot, n_query=15)
     params.freeze_backbone = True
     freeze_backbone = params.freeze_backbone
-    model_type = params.model_type
+    #model_type = params.model_type
 
     if params.dtarget == 'ISIC':
         print ("Loading ISIC")
